@@ -33,7 +33,6 @@ RUN jupyter labextension install \
 	jupyterlab-plotly@4.14.3 \
 	jupyterlab-execute-time
 
-
 RUN jupyter lab build
 
 ### ADDING jupyter lab config: ######
