@@ -3,7 +3,7 @@
 ARG BASE_CONTAINER=jupyter/minimal-notebook
 FROM $BASE_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="benmp <https://github.com/benmp2>"
 
 USER root
 
@@ -16,11 +16,37 @@ USER $NB_UID
 
 COPY requirements.txt /home/jovyan/
 
-RUN conda install --file /home/jovyan/requirements.txt --quiet --yes && \
-    conda clean --all -f -y
+RUN conda install --file /home/jovyan/requirements.txt --quiet --yes
+
+RUN	conda install -c conda-forge --yes \
+	plotly \
+	plotly_express \
+	nodejs \
+	"ipywidgets>=7.5"
+	
+RUN conda clean --all -f -y
+
+RUN jupyter labextension install \
+	@jupyterlab/toc \
+	@jupyter-widgets/jupyterlab-manager \
+	jupyterlab-plotly@4.14.3 \
+	jupyterlab-execute-time
+	
+RUN jupyter lab build
+
+### ADDING jupyter lab config: ######
+RUN mkdir ~/.jupyter/lab
+RUN mkdir ~/.jupyter/lab/user-settings
+USER root
+ENV NB_UID=$NB_UID \
+        NB_GID=$NB_GID
+ADD user-settings /home/$NB_USER/.jupyter/lab/user-settings
+RUN chown -R $NB_UID:$NB_GID /home/$NB_USER/.jupyter/lab/user-settings
+
+USER $NB_UID
 
 EXPOSE 8888
 
-CMD ["bash", "-c", "jupyter notebook --notebook-dir=/home/jovyan/work --ip 0.0.0.0 --no-browser --allow-root"]
+CMD ["bash", "-c", "jupyter lab --notebook-dir=/home/jovyan/work --ip 0.0.0.0 --no-browser --allow-root"]
 
 
