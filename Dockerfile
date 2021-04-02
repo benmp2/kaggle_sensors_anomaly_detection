@@ -22,7 +22,8 @@ RUN	conda install -c conda-forge --yes \
 	plotly \
 	plotly_express \
 	nodejs \
-	"ipywidgets>=7.5"
+	"ipywidgets>=7.5" \
+	hmmlearn
 	
 RUN conda clean --all -f -y
 
