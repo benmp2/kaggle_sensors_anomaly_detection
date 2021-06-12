@@ -9,23 +9,26 @@ USER root
 
 # ffmpeg for matplotlib anim & dvipng+cm-super for latex labels
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg dvipng cm-super && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+	apt-get install -y --no-install-recommends ffmpeg dvipng cm-super && \
+	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $NB_UID
 
-COPY requirements.txt /home/jovyan/
-
-RUN conda install --file /home/jovyan/requirements.txt --quiet --yes
-
 RUN	conda install -c conda-forge --yes \
+	numpy \
+	pandas \
+	scikit-learn \
+	scipy \
+	#ipympl for interactive matplitlib charts:
+	ipympl \
+	seaborn \
 	plotly \
 	plotly_express \
-	nodejs=14 \
+	nodejs \
 	"ipywidgets>=7.5" \
 	hmmlearn \
 	jupyterlab_execute_time
-	
+
 RUN conda clean --all -f -y
 
 RUN jupyter labextension install \
@@ -40,7 +43,7 @@ RUN mkdir ~/.jupyter/lab
 RUN mkdir ~/.jupyter/lab/user-settings
 USER root
 ENV NB_UID=$NB_UID \
-        NB_GID=$NB_GID
+	NB_GID=$NB_GID
 ADD user-settings /home/$NB_USER/.jupyter/lab/user-settings
 RUN chown -R $NB_UID:$NB_GID /home/$NB_USER/.jupyter/lab/user-settings
 
@@ -49,5 +52,4 @@ USER $NB_UID
 EXPOSE 8888
 
 CMD ["bash", "-c", "jupyter lab --notebook-dir=/home/jovyan/work --ip 0.0.0.0 --no-browser --allow-root"]
-
 

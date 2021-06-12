@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  odometer_project:
+    build: .
+    image: kaggle_sensor_detection:latest
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./:/home/jovyan/work"
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
