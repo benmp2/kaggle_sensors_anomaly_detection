@@ -21,17 +21,17 @@ RUN conda install --file /home/jovyan/requirements.txt --quiet --yes
 RUN	conda install -c conda-forge --yes \
 	plotly \
 	plotly_express \
-	nodejs \
+	nodejs=14 \
 	"ipywidgets>=7.5" \
-	hmmlearn
+	hmmlearn \
+	jupyterlab_execute_time
 	
 RUN conda clean --all -f -y
 
 RUN jupyter labextension install \
 	@jupyterlab/toc \
 	@jupyter-widgets/jupyterlab-manager \
-	jupyterlab-plotly@4.14.3 \
-	jupyterlab-execute-time
+	jupyterlab-plotly@4.14.3
 
 RUN jupyter lab build
 

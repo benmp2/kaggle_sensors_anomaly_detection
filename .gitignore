@@ -6,3 +6,4 @@ sensor.csv
 
 #plotly charts folder:
 plotly_charts/
+.vscode
